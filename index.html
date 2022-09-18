@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="card_slider">
+    <p id="go_dark" class="light"> Go dark </p>
+    <label for="accept" class="dark_mode">
+      <input id="accept" value="yes" onclick="darkMode()" type="checkbox">
+      <span class="slider"></span>
+    </label>
+  </div>
+  
+
+  <div id="title" class="title">
+    <h1>Rock, Paper, Scissors</h1>
+  </div>
+  <div class="play_button" id="play_button">
+    <button onclick="displayChoice()" class="button">Play</button>
+  </div>
+
+  <div class="choice_card" id="choice_card">
+
+    <button id="rock" class="button choice rock" onclick="game()"></button>
+    <button id="paper" class="button choice paper" onclick="game()"></button>
+    <button id="scissors" class="button choice scissors" onclick="game()"></button>
+
+  </div>
+
+  <div id="result_card" class="result_card">
+    <h2 id="computer_result" class="computer_result"></h2>
+    <h2 id="winner" class="winner"></h2>
+  </div>
+  <div id="stats_button" class="stats_button">
+    <button onclick="statsShow()" id="statsBtn" class="button ranking"></button>
+  </div>
+  <div id="stats_container" class="stats_container">
+    <span onclick="statsHide()"></span>
+    <h3 id="stats" class="stats">You've played 0 games.</h3>
+    <h3 id="won" class="won">You won 0 games.</h3>
+    <h3 id="lost" class="lost">You lost 0 games.</h3>
+    <h3 id="tigh_games" class="tigh_games"></h3>
+  </div>
+  <div id="play_again_container" class="play_again_container">
+    <button onclick="playAgain()" id="play_again" class="button play_again">Play again</button>
+  </div>
+
+  <script>
+
+
+    let nbParties = [];
+    let rock = document.getElementById("rock");
+    let paper = document.getElementById("paper");
+    let scissors = document.getElementById("scissors");
+    let user_result = document.getElementById("user_result");
+    let computer_restult = document.getElementById("computer_result");
+    let winner = document.getElementById("winner");
+    let play_again = document.getElementById("play_again_container")
+    let bout = document.querySelectorAll('.choice');
+    let statsButton = document.getElementById("statsBtn");
+    let disabledPicked = document.getElementById("disabled_picked");
+    let dark = document.getElementById("accept");
+    let statsContainer = document.getElementById("stats_container_show");
+
+
+    function wavy() {
+      document.querySelector("body").classList.toggle("wavy")
+    }
+
+
+
+    function darkMode() {
+
+      document.querySelector("body").classList.toggle("dark")
+
+
+
+
+      var x = document.getElementById("go_dark");
+      if (x.innerHTML === "Follow the ligth") {
+        x.innerHTML = "Go dark";
+        x.classList.remove("dark_p")
+      } else {
+
+        x.innerHTML = "Follow the ligth";
+        x.classList.toggle("dark_p")
+      }
+    }
+
+
+
+    function statsShow() {
+      document.getElementById("stats_container").classList.add("stats_container_show")
+
+    }
+    function statsHide() {
+      document.getElementById("stats_container").classList.remove("stats_container_show")
+    }
+
+    function displayChoice() {
+      var element = document.getElementById("choice_card");
+      element.classList.add("show");// Affiche les trois boutons lorque l'utilisateur clique sur "Play"
+      document.getElementById("play_button").classList.add("hide_play_button")// Masque le bouton "Play"
+
+
+
+
+    }
+    function playAgain() {
+      computer_restult.innerHTML = "";      // Masque le resultat du match précédent via l'ID "result".
+      winner.innerHTML = "";                // Masque le vainqueur
+      rock.classList.remove("disabled_button"); // Retire la classe effet "boutons disabled" via css afin que les boutons
+      paper.classList.remove("disabled_button"); // retrouve leurs apparences initiales.
+      scissors.classList.remove("disabled_button");
+      winner.classList.remove("tigh");
+      winner.classList.remove("loose");
+      play_again.classList.remove("play_again_show");
+
+
+      for (let i = 0; i < bout.length; i++) {     // Boucle qui recherche si un boutons contient la classe "boutons choisit" et,
+
+        bout[i].classList.remove("disabled_picked"); // la retire la classe disabled_button
+        bout[i].disabled = false; // Réactive les boutons
+
+      }
+
+
+    }
+
+
+
+    function game() {
+
+      
+
+
+      for (let i = 0; i < bout.length; i++) { // Désactive les boutons
+        bout[i].disabled = true;
+
+      }
+      document.getElementById("play_again_container").classList.add("play_again_show");// Affiche le bouton "Play again"
+      let userPick = event.target.id;// Réccupere le nom de la class du bouton sur lequel l'utilisateur a cliqué et l'enregistre dans la variable "userpick"
+      let computerChoice = Math.floor(Math.random() * 3)//Génére aléatoirement un nombre entre 0 et 2 et lui
+      if (computerChoice === 0) {                         // assigne un choix entre pierre papier et ciseaux.
+        computerChoice = "scissors";
+      } else if (computerChoice === 1) {
+        computerChoice = "paper";
+      } else {
+        computerChoice = "rock";
+      };
+
+
+
+
+
+      if (userPick === "rock") {
+        // Réutilise la variable "userpick" et la compare a une string. Si userPick = rock
+
+        paper.classList.add("disabled_button");// bouton non choisit et neutralisé
+        scissors.classList.add("disabled_button"); // bouton non choisit et neutralisé
+        rock.classList.add("disabled_picked");//Sinon, la class disabled_picked est ajouté
+
+        if (computerChoice === "paper") {                                                                // et que ComputerChocie =paper...
+          computer_restult.innerHTML = "Computer choose Paper, paper cover the rock" // affiche le resultat dans un h2 vide via l'ID
+          winner.classList.add("loose")// Change la couleur du resultat si l'utilisateur perd.
+          winner.innerHTML = "You loose"
+          nbParties.push("lost")
+        }
+        if (computerChoice === "scissors") {
+          computer_restult.innerHTML = "Computer choose Scissors, rock smash the scissors";// idem
+          winner.innerHTML = "You win";
+          nbParties.push("won")
+        }
+      }
+
+
+      if (userPick === "paper") {
+
+
+        rock.classList.add("disabled_button");// bouton non choisit et neutralisé
+        scissors.classList.add("disabled_button");// bouton non choisit et neutralisé
+        paper.classList.add("disabled_picked");//Sinon, la class disabled_picked est ajoutée
+
+
+        if (computerChoice === "scissors") {
+          computer_restult.innerHTML = "Computer choose the scissors, the scissors cut the paper"
+          winner.classList.add("loose")// Change la couleur du resultat si l'utilisateur perd.
+          winner.innerHTML = "You loose"
+          nbParties.push("lost")
+        }
+        if (computerChoice === "rock") {
+          computer_restult.innerHTML = "Computer choose the rock, the paper cover the rock";
+          winner.innerHTML = "You win"
+          nbParties.push("won")
+        }
+      }
+
+      if (userPick === "scissors") {
+
+        rock.classList.add("disabled_button");// bouton non choisit et neutralisé
+        paper.classList.add("disabled_button");// bouton non choisit et neutralisé
+        scissors.classList.add("disabled_picked");//Sinon, la class disabled_picked est ajoutée
+
+
+        if (computerChoice === "rock") {
+          computer_restult.innerHTML = "Computer choose the rock, the rock smash the scissors"
+          winner.classList.add("loose")// Change la couleur du resultat si l'utilisateur perd.
+          winner.innerHTML = "You loose"
+          nbParties.push("lost")
+        }
+        if (computerChoice === "paper") {
+          computer_restult.innerHTML = "Computer choose the paper, the scissors cut the paper";
+          winner.innerHTML = "You win"
+          nbParties.push("won")
+
+
+        }
+      }
+      if (computerChoice === userPick) {
+
+
+        computer_restult.innerHTML = "You have both choosen the " + userPick + " !" // si les deux variables sont identiques, alors il renvoi "égalité"
+        winner.innerHTML = "It's a tigh !!"
+        nbParties.push("tigh")
+        winner.classList.add("tigh")
+
+      }
+
+      let wonGames = 0;
+      let lostGames = 0;
+      let tighGames = 0;
+
+      for (let i = 0; i < nbParties.length; i++) {
+        const element = nbParties[i];
+        if (element === "won") {
+          wonGames += 1;
+        } else if (element === "lost") {
+          lostGames += 1;
+        } else {
+          tighGames += 1;
+        }
+      }
+
+
+      document.getElementById("stats").innerHTML = "You've played " + nbParties.length + " games.";
+      document.getElementById("won").innerHTML = "You won " + wonGames + " games.";
+      document.getElementById("lost").innerHTML = "You lost " + lostGames + " games.";
+      document.getElementById("tigh_games").innerHTML = "Tigh games :" + tighGames;
+    }
+
+
+  </script>
+</body>
+</html>
